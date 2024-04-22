@@ -1,0 +1,63 @@
+#Importing required modules
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+import os
+
+#Setting the path of Excel file through 'os'
+os.chdir("C:/Users/navit/.pygalaxy")
+df = pd.read_csv("train.csv") 
+
+#Filling the missing values
+df['Age'].fillna(df['Age'].median(),inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0],inplace=True)
+
+import warnings
+warnings.simplefilter(action="ignore",category=FutureWarning)
+
+#Survival vs sex
+sns.set(style="whitegrid")
+plt.figure(figsize=(8,4))
+sns.countplot(x="Survived",hue="Sex",data=df)
+plt.title("Survival by Sex")
+plt.show()
+
+#Survival vs passenger 
+plt.figure(figsize=(8,4))
+sns.countplot(x="Survived",hue="Pclass",data=df)
+plt.title("Survival by Passenger class")
+plt.show()
+
+#Survival vs age
+plt.figure(figsize=(8,4))
+sns.histplot(data=df,x='Age',kde=True,hue='Survived',common_norm=False)
+plt.title("Survival by Age")
+plt.show() 
+
+#Survival vs Fare
+plt.figure(figsize=(8,4))
+sns.histplot(data=df,x='Fare',kde=True,hue='Survived',common_norm=False)
+plt.title("Survival by Fare")
+plt.show() 
+
+df=pd.get_dummies(df,columns=['Embarked'],drop_first=True)
+
+#one heatmap
+plt.figure(figsize=(10,6))
+correlation_matrix = df[['Survived','Pclass','Age','SibSp','Parch','Fare','Embarked_Q','Embarked_S']].corr()
+sns.heatmap(correlation_matrix,annot=True,cmap="coolwarm",fmt=".2f")
+plt.title("Correlation Heatmap")
+plt.show()
+
+#Age Distribution 
+plt.figure(figsize=(8,4))
+sns.histplot(data=df,x='Age',kde=True,bins=20)
+plt.title("Age Distribution")
+plt.show() 
+
+#Fare distribution
+plt.figure(figsize=(8,4))
+sns.histplot(data=df,x='Fare',kde=True,bins=20)
+plt.title("Fare Distribution")
+plt.show() 
